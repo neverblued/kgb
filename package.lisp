@@ -1,2 +1,3 @@
 (defpackage #:kgb
-  (:use #:cl #:dc-bin))
+  (:use #:cl #:dc-bin)
+  (:export #:authenticate))

@@ -15,4 +15,12 @@
   :depends-on (#:dc-bin #:ironclad)
   :serial t
   :components ((:file "package")
-               (:file "kgb")))
+               (:file "achtung")
+               (:file "right")
+               (:file "expand")
+               (:file "group")
+               (:file "depute")
+               (:file "access")
+               (:file "user")
+               (:file "authenticate")
+               (:file "check")))
