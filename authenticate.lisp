@@ -1,22 +1,23 @@
 (in-package #:kgb)
 
+(defparameter *login-log* nil)
+(defvar *user*)
+
 (defun login-user (alias password)
-  (let ((user (find-user-alias alias)))
-    (if user
-        (if (string= (user-password user) password)
-            user
-            (signal (make-condition 'login-wrong-password :user-alias alias)))
-        (signal (make-condition 'login-unknown-alias :user-alias alias)))))
+  (let ((user (alias-user alias)))
+    (unless user
+      (error 'login-unknown-alias :user-alias alias))
+    (unless (string= (user-password user) password)
+      (error 'login-wrong-password :user-alias alias))
+    (push (cons (get-universal-time) user) *login-log*)
+    user))
 
 (defgeneric authenticate (request))
 
 (defmethod authenticate (request)
   nil)
 
-(defparameter *user* nil)
-
 (defmacro with-authentication (request &body body)
   `(let ((*user* (or (authenticate ,request)
                      (make-guest))))
-     (declare (special *user*))
      ,@body))

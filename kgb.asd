@@ -1,9 +1,5 @@
 (defpackage #:kgb-system
-  (:use
-     #:common-lisp
-     #:asdf
-     )
-  )
+  (:use #:common-lisp #:asdf))
 
 (in-package #:kgb-system)
 
