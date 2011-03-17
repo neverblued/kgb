@@ -1,21 +1,29 @@
 (in-package #:kgb)
 
-(define-condition achtung (simple-error) ())
+(define-condition achtung (simple-error)
+  ((timestamp :initform (get-universal-time) :reader timestamp)))
 
-(define-condition human-not-found (achtung) ())
+(define-condition alias-duplication (achtung)
+  ((old-person :initarg :old-person :reader old-person)
+   (new-person :initarg :new-person :reader new-person))
+  (:report (lambda (condition stream)
+             (format stream "п÷п╬п©я▀я┌п╨п╟ я│п╬п╥п╢п╟я┌я▄ п╩п╦я┤п╫п╬я│я┌я▄ я│ я│я┐я┴п╣я│я┌п╡я┐я▌я┴п╦п╪ п©п╬п╥я▀п╡п╫я▀п╪ '~a'."
+                     (alias (old-person condition))))))
+
+(define-condition user-not-found (achtung) ())
 
 (define-condition login-failure (achtung)
-  ((user-alias :initform :user-alias :reader condition-user-alias))
+  ((login-alias :initform :login-alias :reader login-alias))
   (:report (lambda (condition stream)
              (declare (ignore condition))
-             (format stream "Войти не удалось."))))
+             (format stream "п▓п╬п╧я┌п╦ п╫п╣ я┐п╢п╟п╩п╬я│я▄."))))
 
-(define-condition login-unknown-alias (login-failure) ()
+(define-condition unknown-login-alias (login-failure) ()
   (:report (lambda (condition stream)
              (declare (ignore condition))
-             (format stream "Неизвестный позывной."))))
+             (format stream "п²п╣п╦п╥п╡п╣я│я┌п╫я▀п╧ п©п╬п╥я▀п╡п╫п╬п╧."))))
 
-(define-condition login-wrong-password (login-failure) ()
+(define-condition wrong-login-password (login-failure) ()
   (:report (lambda (condition stream)
              (declare (ignore condition))
-             (format stream "Неправильный пароль."))))
+             (format stream "п²п╣п©я─п╟п╡п╦п╩я▄п╫я▀п╧ п©п╟я─п╬п╩я▄."))))
