@@ -1,3 +1,3 @@
 (defpackage #:kgb
-  (:use #:cl #:dc-bin)
-  (:export #:authenticate #:default-person-name))
+  (:use #:cl #:blackjack)
+  (:export #:authenticate #:default-user-name))

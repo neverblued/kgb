@@ -1,12 +1,10 @@
 (in-package #:kgb)
 
-(defvar direct-rights (make-hash-table))
-
 (defun direct-rights (subject)
-  (values (gethash subject direct-rights nil)))
+  (values (gethash subject (direct-rights-table system) nil)))
 
 (defun (setf direct-rights) (new-rights subject)
-  (setf (gethash subject direct-rights) new-rights))
+  (setf (gethash subject (direct-rights-table system)) new-rights))
 
 (defvar expansions nil)
 
@@ -41,14 +39,17 @@
   "Is the RIGHT available for the SUBJECT?"
   (true? (intersection (rights subject) (expand right))))
 
+(defun user? (subject)
+  (typep subject 'user))
+
 (defun power? (right)
   "If current USER has RIGHT."
-  (if (typep user 'person)
+  (if (user? user)
       (allow? user right)
       (error 'user-not-found)))
 
 (defun status? (subject)
   "If current USER is deputed from SUBJECT."
-  (if (typep user 'person)
+  (if (user? user)
       (depute? user subject)
       (error 'user-not-found)))

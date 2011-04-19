@@ -5,14 +5,14 @@
 
 (defsystem "kgb"
   :description "Authentication layer."
-  :version "0.1"
+  :version "0.2"
   :author "Demetrius Conde <condemetrius@gmail.com>"
-  :licence "Public Domain"
-  :depends-on (#:dc-bin #:ironclad)
+  :depends-on (#:blackjack #:ironclad #:hunchentoot)
   :serial t
   :components ((:file "package")
-               (:file "achtung")
-               (:file "person")
+               (:file "conditions")
+               (:file "system")
+               (:file "user")
                (:file "authenticate")
                (:file "group")
                (:file "right")))

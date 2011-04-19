@@ -1,12 +1,10 @@
 (in-package #:kgb)
 
-(defvar direct-groups (make-hash-table))
-
 (defun direct-groups (subject)
-  (values (gethash subject direct-groups nil)))
+  (values (gethash subject (direct-groups-table system) nil)))
 
 (defun (setf direct-groups) (new-groups subject)
-  (setf (gethash subject direct-groups) new-groups))
+  (setf (gethash subject (direct-groups-table system)) new-groups))
 
 (defun groups (subject)
   (labels ((rec-groups (subject)

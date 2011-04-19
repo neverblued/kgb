@@ -4,11 +4,11 @@
   ((timestamp :initform (get-universal-time) :reader timestamp)))
 
 (define-condition alias-duplication (achtung)
-  ((old-person :initarg :old-person :reader old-person)
-   (new-person :initarg :new-person :reader new-person))
+  ((old-user :initarg :old-user :reader old-user)
+   (new-user :initarg :new-user :reader new-user))
   (:report (lambda (condition stream)
              (format stream "Попытка создать личность с существующим позывным '~a'."
-                     (alias (old-person condition))))))
+                     (alias (old-user condition))))))
 
 (define-condition user-not-found (achtung) ())
 
@@ -27,3 +27,8 @@
   (:report (lambda (condition stream)
              (declare (ignore condition))
              (format stream "Неправильный пароль."))))
+
+(define-condition access-denied (achtung) ()
+  (:report (lambda (condition stream)
+             (declare (ignore condition))
+             (format stream "Нет доступа."))))
