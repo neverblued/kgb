@@ -1,27 +1,39 @@
 (in-package #:kgb)
 
+(defvar user)
+
+(defclass log-record ()
+  ((date :initarg :date :accessor log-date :col-type timestamp)
+   (person :initarg :person :accessor log-person :col-type string))
+  (:metaclass dao-class))
+
+(defun log-authentication (person)
+  (insert-dao (make-instance 'log-record
+                             :date (universal-time-to-timestamp (get-universal-time))
+                             :person (alias person))))
+
 (defun login (alias password)
-  (let ((user (alias-user alias)))
-    (unless user
+  (let ((person (alias-person alias)))
+    (unless person
       (error 'unknown-login-alias :login-alias alias))
-    (unless (string= (password user) password)
+    (unless (check-seal person password)
       (error 'wrong-login-password :login-alias alias))
-    (push (cons (get-universal-time) user) (logbook system))
-    user))
+    (log-authentication person)
+    person))
 
 (defgeneric authenticate (request))
 
 (defmethod authenticate (request)
   nil)
 
-(defun introduce-guest ()
-  (alias-ensure-user (guest-alias)))
-
-(defmacro with-system (system &body body)
-  `(let ((kgb::system ,system) kgb::user)
-     ,@body))
+(defun authentication-possible? ()
+  (and (typep *database* 'database-connection)
+       (table-exists-p :person)))
 
 (defmacro with-authentication (request &body body)
-  `(let ((user (or (authenticate ,request)
-                   (introduce-guest))))
-     ,@body))
+  (with-gensyms (req)
+    `(let* ((,req ,request)
+            (kgb::user (and (kgb::authentication-possible?)
+                            (or (kgb::authenticate ,req)
+                                (kgb::introduce-guest ,req)))))
+       ,@body)))

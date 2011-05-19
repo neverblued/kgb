@@ -1,3 +1,3 @@
 (defpackage #:kgb
-  (:use #:cl #:blackjack)
-  (:export #:authenticate #:default-user-name))
+  (:use #:cl #:blackjack #:postmodern #:postgrace #:simple-date #:iterate)
+  (:export #:authenticate #:default-name))
