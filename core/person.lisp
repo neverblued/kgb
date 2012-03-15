@@ -1,3 +1,7 @@
+;; (c) Дмитрий Пинский <demetrius@neverblued.info>
+;; Допускаю использование и распространение согласно
+;; LLGPL -> http://opensource.franz.com/preamble.html
+
 (in-package #:kgb)
 
 ;; class
@@ -22,48 +26,16 @@
 
 ;; seal
 
+(defparameter seal-secret "~secret~")
+
 (defun make-seal (person password)
-  (checksum (join (id person) "~secret~" password)))
+  (checksum (join (id person) seal-secret password)))
 
 (defun reset-seal (person password)
   (setf (seal person) (make-seal person password)))
 
 (defun check-seal (person password)
   (equal (seal person) (make-seal person password)))
-
-;; fetch
-
-(defun id-person (id)
-  (get-dao 'person id))
-
-(defun alias-person (alias)
-  (car (query-dao 'person (:select '* :from 'person :where (:= 'alias alias)))))
-
-(defun seal-person (seal)
-  (car (query-dao 'person (:select '* :from 'person :where (:= 'seal seal)))))
-
-;; count
-
-(defun count-person ()
-  (query (:select (:count 'id) :from 'person) :single))
-
-(defun max-id ()
-  (let ((max-id (query (:select (:max 'id) :from 'person) :single)))
-    (if (eql max-id :null) 0 max-id)))
-
-(defun next-id ()
-  (+ 1 (max-id)))
-
-;; manipulate
-
-(defmethod insert-dao :before ((person person))
-  (setf (id person) (next-id)))
-
-(defun kill (person)
-  (delete-dao person))
-
-(defun create-person (&rest args)
-  (apply #'make-dao 'person args))
 
 ;; guest
 
@@ -80,6 +52,15 @@
     (update-dao guest)
     guest))
 
+;; check
+
+(defun person? (subject)
+  (typep subject 'person))
+
 (defun user? (subject)
-  (and (person? subject)
-       (not (string= "" (alias subject)))))
+  (true? (and (person? subject)
+              (id subject))))
+
+(defun check-user ()
+  (unless (person? user)
+    (error 'authentication-missing)))

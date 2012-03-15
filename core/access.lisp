@@ -1,8 +1,12 @@
+;; (c) Дмитрий Пинский <demetrius@neverblued.info>
+;; Допускаю использование и распространение согласно
+;; LLGPL -> http://opensource.franz.com/preamble.html
+
 (in-package #:kgb)
 
 (defun rights (subject)
   "All rights of the SUBJECT."
-  (awhen (reduce #'union (mapcar #'direct-rights (groups subject)))
+  (awhen (reduce #'union (mapcar #'direct-rights (communities subject)))
     (reduce #'union (mapcar #'expand it))))
 
 (defun allow! (subject right)

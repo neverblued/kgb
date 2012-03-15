@@ -1,7 +1,16 @@
+;; (c) Дмитрий Пинский <demetrius@neverblued.info>
+;; Допускаю использование и распространение согласно
+;; LLGPL -> http://opensource.franz.com/preamble.html
+
 (in-package #:kgb)
 
 (define-condition achtung (simple-error)
   ((timestamp :initform (get-universal-time) :reader timestamp)))
+
+(define-condition authentication-impossible (achtung) ()
+  (:report (lambda (condition stream)
+             (declare (ignore condition))
+             (format stream "Отказ системы безопасности, опознание невозможно."))))
 
 (define-condition alias-duplication (achtung)
   ((old-person :initarg :old-person :reader old-person)
