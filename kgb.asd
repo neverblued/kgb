@@ -9,14 +9,16 @@
 
 (defsystem #:kgb
   :description "Security framework"
-  :version "0.4"
+  :version "0.7"
   :author "Дмитрий Пинский <demetrius@neverblued.info>"
-  :depends-on (#:ironclad #:simple-date #:blackjack)
+  :depends-on (#:blackjack)
   :serial t
   :components ((:file "package")
-               (:file "conditions")
-               (:file "person")
+               ;(:file "tools")
+               (:file "condition")
+               (:file "model")
+               (:file "seal")
+               ;(:file "right")
                (:file "authenticate")
-               (:file "community")
-               (:file "right")
-               (:file "expand")))
+               (:file "algebra")
+               (:file "format")))
