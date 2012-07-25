@@ -21,7 +21,7 @@
            nil))
        t))
 
-;; authentication
+;; with-authentication
 
 (defgeneric authentication-possible? ())
 
@@ -33,13 +33,20 @@
          ,@body)
        (error 'authentication-impossible)))
 
+;; request-user
+
 (defgeneric authenticate (request))
 
 (defgeneric introduce-guest (request))
 
-(defmethod request-user (request)
-  (or (authenticate request)
-      (introduce-guest request)))
+(defmethod request-user (it)
+  (or (authenticate it)
+      (introduce-guest it)))
+
+(defmethod authenticate (it)
+  (login (alias it) (password it)))
+
+;; login
 
 (defgeneric log-authentication (person))
 
@@ -52,15 +59,19 @@
     (log-authentication it)
     it))
 
-(defmethod authenticate (it)
-  (login (alias it) (password it)))
-
 ;; guest
 
 (defparameter guest-class 'person)
 
 (defgeneric guest-alias (request))
+
 (defgeneric guest-password (request))
+
+(defmethod guest-alias (request)
+  (symbol-name (gensym "USER")))
+
+(defmethod guest-password (request)
+  (symbol-name (gensym)))
 
 (defun make-guest (&rest args)
   (unless (subtypep guest-class 'person)
@@ -82,3 +93,13 @@
   (make-instance 'credentials
                  :alias alias
                  :password password))
+
+(defun request-credentials (request)
+  (macrolet ((extract (request)
+               `(awhen ,request
+                  (with-accessors ((alias alias)
+                                   (password password)) it
+                    (when (and alias password)
+                      (alias+password alias password))))))
+    (handler-case (extract request)
+      (error () nil))))

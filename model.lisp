@@ -63,6 +63,7 @@
 
 ;; authentication
 
-;(defgeneric guest-password (request))
+(defgeneric guest-alias (request))
+(defgeneric guest-password (request))
 
 ;(defgeneric introduce-guest (request &key person-class))

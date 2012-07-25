@@ -44,7 +44,7 @@
    #:request-user
    #:introduce-guest #:make-guest #:guest?
    #:guest-class #:guest-alias #:guest-password
-   #:alias+password
+   #:alias+password #:request-credentials
    #:with-security
                                         ; query
 
